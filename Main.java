@@ -1,77 +1,132 @@
-import java.util.Scanner;
-// a method that gets the username and registration number.
-class getdetails{
-    String username;
-    String regNo;
-    public void getdetails(){
-        Scanner input = new Scanner(System.in);
-        System.out.println("Enter your username: ");
-        username = input.nextLine();
-        System.out.println("Enter your registration number: ");
-        regNo = input.next();
-    }
-}
-class finances{
-    double current_fee=20000;
-    double fees;
-    double balance;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.sql.*;
 
-    public void fees(){
-        Scanner input = new Scanner(System.in);
-        System.out.println("Enter the amount of fees: ");
-        fees = input.nextDouble();
-        balance = current_fee-fees;
-    }
-    public void display(){
 
-        System.out.println("The amount of balance is: "+balance);
+public class RegistrationForm {
 
-    }
-}
-class marks {
-    public void getmarks
+    private JFrame Title;
+    private JPanel panel;
+    private JLabel nameLabel, usernameLabel, passwordLabel, confirmPasswordLabel, emailLabel, phoneLabel, addressLabel;
+    private JTextField nameField, usernameField, passwordField, confirmPasswordField, emailField, phoneField, addressField;
+    private JButton  submitButton, resetButton, closeButton;
 
-    {
-        String[] arr = {"English", "Mathematics", "Kiswahili", "Science,S/S & CRE"};
-        double[][][] subjects = new double[1][5][3];
-        double total=0;
-        String[] grade={"A","B","C"};
-        for (int i = 0; i <= arr.length; i++) {
 
-            for(int j=0; j <= subjects.length; j++) {
-                System.out.println("enter marks for" + i);
-                subjects[i][j][k] = Scanner.nextDouble;
-                for (int k = 0; k <= grade; k++) {
-                    if (subjects[i][j][k] >= 70 && subjects[i][j][k] <= 100) {
-                        grade = "A";
-                    } else if (subjects[i][j] >= 50 && subjects[i][j] < 70) {
-                        grade = "B";
-                    } else if (subjects[i][j] > 40) {
-                        grade = "C";
-                    } else {
-                        System.out.println("invalid marks!!!");
+    public RegistrationForm() {
+        JFrame  Title= new JFrame("Registration Form");
+        Title.setSize(400, 500);
+        Title.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(8, 2));
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField();
+        panel.add(nameLabel);
+        panel.add(nameField);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        JTextField usernameField = new JTextField();
+        panel.add(usernameLabel);
+        panel.add(usernameField);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        JPasswordField passwordField = new JPasswordField();
+        panel.add(passwordLabel);
+        panel.add(passwordField);
+
+        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+        JPasswordField confirmPasswordField = new JPasswordField();
+        panel.add(confirmPasswordLabel);
+        panel.add(confirmPasswordField);
+
+        JLabel emailLabel = new JLabel("Email:");
+        JTextField emailField = new JTextField();
+        panel.add(emailLabel);
+        panel.add(emailField);
+
+        JLabel phoneLabel = new JLabel("Phone:");
+        JTextField phoneField = new JTextField();
+        panel.add(phoneLabel);
+        panel.add(phoneField);
+
+        JLabel addressLabel = new JLabel("Address:");
+        JTextField addressField = new JTextField();
+        panel.add(addressLabel);
+        panel.add(addressField);
+
+        JButton submitButton = new JButton("Submit");
+        JButton resetButton = new JButton("Reset");
+        JButton closeButton = new JButton("Close");
+
+
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Clear the form fields
+                nameField.setText("");
+                usernameField.setText("");
+                passwordField.setText("");
+                confirmPasswordField.setText("");
+                emailField.setText("");
+                phoneField.setText("");
+                addressField.setText("");
+            }
+        });
+
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                // Exit the program
+                System.exit(0);
+            }
+        });
+
+        panel.add(submitButton);
+        panel.add(resetButton);
+        panel.add(closeButton);
+
+        Title.getContentPane().add(panel);
+        Title.setVisible(true);
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                    String url = "jdbc:mysql://localhost:3306/registration";
+                    Connection connection = DriverManager.getConnection(url);
+                    String insertSQL = "INSERT INTO registration (Name,Username,Password,Email,Phone,Address) VALUES (?,?,?,?,?,?)";
+                try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)){
+                    String name = nameField.getText();
+                    String username = usernameField.getText();
+                    String password = passwordField.getText();
+                    String confirmPassword = confirmPasswordField.getText();
+                    String email = emailField.getText();
+                    String phone = phoneField.getText();
+                    String address = addressField.getText();
+                    if(name.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty()){
+                        JOptionPane.showMessageDialog(null, "Please fill all the fields");
                     }
-                    total = subjects[i][j] + total;
+                    else if(!password.equals(confirmPassword)){
+                        JOptionPane.showMessageDialog(null, "Password and Confirm Password must be same");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Registration Successful");
+                    }
                 }
-            }
+                catch(Exception ex){
+                    JOptionPane.showMessageDialog(null, ex);
+                }
+                // Register the user
 
-        double average= total/5;
-            if(average >=70 ){
-                grade="A";
             }
+        });
 
-        }
     }
-}
 
-
-
-
-
-
-
-public class Main {
     public static void main(String[] args) {
-
+        new RegistrationForm();
     }
 }
+
